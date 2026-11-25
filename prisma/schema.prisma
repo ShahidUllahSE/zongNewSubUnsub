@@ -27,7 +27,7 @@ model Subscriber {
 
   @@index([msisdn])
   @@index([status])
-  @@map("subscribers")
+  @@map("subscribers_new_requirement")
 }
 
 model ReverseFlowLog {
@@ -49,5 +49,5 @@ model ReverseFlowLog {
   @@index([msisdn])
   @@index([responseCode])
   @@index([createdAt])
-  @@map("reverse_flow_logs")
+  @@map("reverse_flow_logs_new_requirement")
 }
