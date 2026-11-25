@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Subscriber {
+  id                Int              @id @default(autoincrement())
+  msisdn            String           @unique @db.VarChar(20)
+  serviceId         String           @default("1") @map("service_id") @db.VarChar(20)
+  channelId         String           @map("channel_id") @db.VarChar(20)
+  bundleId          String?          @map("bundle_id") @db.VarChar(50)
+  status            SubscriberStatus @default(INACTIVE)
+  subscribedAt      DateTime?        @map("subscribed_at")
+  unsubscribedAt    DateTime?        @map("unsubscribed_at")
+  lastZongTimestamp String?          @map("last_zong_timestamp") @db.VarChar(20)
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  @@index([msisdn])
+  @@index([status])
+  @@map("subscribers")
+}
+
+model ReverseFlowLog {
+  id                  Int      @id @default(autoincrement())
+  msisdn              String?  @db.VarChar(20)
+  serviceId           String?  @map("service_id") @db.VarChar(20)
+  channelId           String?  @map("channel_id") @db.VarChar(20)
+  channelOption       String?  @map("channel_option") @db.VarChar(10)
+  bundleId            String?  @map("bundle_id") @db.VarChar(50)
+  zongTimestamp       String?  @map("zong_timestamp") @db.VarChar(20)
+  rawRequest          String   @map("raw_request") @db.Text
+  rawResponse         String   @map("raw_response") @db.Text
+  responseCode        Int      @map("response_code")
+  responseDescription String   @map("response_description") @db.VarChar(255)
+  clientIp            String?  @map("client_ip") @db.VarChar(50)
+  executionTimeMs     Int?     @map("execution_time_ms")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  @@index([msisdn])
+  @@index([responseCode])
+  @@index([createdAt])
+  @@map("reverse_flow_logs")
+}
