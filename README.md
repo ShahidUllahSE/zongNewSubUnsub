@@ -138,6 +138,42 @@ npm start
 
 ---
 
+## ⚡ PM2 Production Deployment (Team Lead Guide)
+
+This application is fully production-ready and optimized for **PM2 Process Manager** with cluster mode and graceful shutdown support (`SIGINT`/`SIGTERM`).
+
+### Step 1: Install dependencies and generate Prisma client
+```bash
+npm install --production=false
+npx prisma db push
+```
+
+### Step 2: Build TypeScript into `dist/`
+```bash
+npm run build
+```
+
+### Step 3: Start with PM2
+Using the included `ecosystem.config.js`:
+```bash
+# Cluster mode (uses all CPU cores for high performance)
+pm2 start ecosystem.config.js --env production
+
+# Or standalone simple PM2 command
+pm2 start dist/index.js --name "zong-reverse-flow"
+```
+
+### PM2 Monitoring Commands:
+```bash
+pm2 status
+pm2 logs zong-reverse-flow
+pm2 reload zong-reverse-flow   # Zero-downtime graceful reload
+pm2 restart zong-reverse-flow
+pm2 stop zong-reverse-flow
+```
+
+---
+
 ## 🧪 Testing & Verification
 
 Run the automated integration test suite covering all 8 response codes, database persistence, and audit logging:
